@@ -1,5 +1,6 @@
 package com.andreip;
 
+import com.andreip.api.ProductApi;
 import com.andreip.api.ProductApiDelegate;
 import com.andreip.db.ProductDao;
 import com.andreip.model.ArrayOfProducts;
@@ -16,6 +17,15 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
     @Resource
     ProductDao productService;
 
+    /**
+     * GET /product : Get list of all products
+     *
+     * @param page The index of the page to display starting from 1. (optional, default to 1)
+     * @param items The number of products to display in one page. Minimunm is 1 and maximum is 100, default is 10 (optional, default to 10)
+     * @return successful operation (status code 200)
+     *         or Generic error (status code 200)
+     * @see ProductApi#getProducts
+     */
     @Override
     public ResponseEntity<ArrayOfProducts> getProducts(Integer page, Integer items) {
         items = items == null ? 10 : items;
