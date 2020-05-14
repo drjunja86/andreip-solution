@@ -1,0 +1,32 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    volumes:
+      - {{ solution_postgres_dir }}:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER={{ postgres_user }}
+      - POSTGRES_PASSWORD={{ postgres_pass }}
+      - POSTGRES_DB=testdb
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+    restart: unless-stopped
+  webservice:
+    image: webservice:latest
+    container_name: webservice
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    links:
+      - postgres

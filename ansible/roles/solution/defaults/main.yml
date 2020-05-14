@@ -1,0 +1,30 @@
+---
+docker_user: ubuntu
+
+## docker & docker-compose versions
+docker_key_url: https://download.docker.com/linux/ubuntu/gpg
+docker_version: 19.03.8~ce-0~ubuntu
+docker_users:
+  - "{{ docker_user }}"
+docker_compose_version: "1.25.4"
+docker_compose_http_timeout: 200
+project_name: solution
+
+# directory structure
+solution_base_dir:          "/opt/{{project_name}}"
+solution_app_dir:           "{{solution_base_dir}}/app"
+solution_generator_dir:     "{{solution_base_dir}}/generator"
+solution_postgres_dir:      "{{solution_base_dir}}/data"
+solution_logs_dir:          "{{solution_base_dir}}/logs"
+
+# for testing purpose all folder set to insecure permissions
+solution_dirs:
+  - { path: "{{solution_base_dir}}",          owner: "{{docker_user}}", perms: "0777" }
+  - { path: "{{solution_app_dir}}",           owner: "{{docker_user}}", perms: "0777" }
+  - { path: "{{solution_generator_dir}}",     owner: "{{docker_user}}", perms: "0777" }
+  - { path: "{{solution_postgres_dir}}",      owner: "{{docker_user}}", perms: "0777" }
+  - { path: "{{solution_logs_dir}}",          owner: "{{docker_user}}", perms: "0777" }
+
+# database
+postgres_user: dbuser
+postgres_pass: ajfo3489fj033

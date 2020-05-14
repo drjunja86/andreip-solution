@@ -1,0 +1,17 @@
+---
+- name: include variables from vars dir
+  include_vars:
+    dir: vars
+  tags: [always]
+
+- import_tasks: install-docker.yml
+  tags: [provisioning,docker]
+
+- import_tasks: install-docker-compose.yml
+  tags: [provisioning,docker]
+
+- import_tasks: data.yml
+  tags: [provisioning]
+
+- import_tasks: component-web-service.yml
+  tags: [always]

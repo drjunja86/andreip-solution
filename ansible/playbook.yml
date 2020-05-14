@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  serial: 1
+  vars:
+    server_ip_octets: "{{ server_ip.split('.') }}"
+    run_local: "{{ local }}"
+
+  roles:
+    - solution
+  
+  pre_tasks:
+    -
+    - name: Server's IP
+      debug: var=ansible_default_ipv4.address
+      tags: [always]
+      
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt:
+        update_cache: yes
+      tags: [always, aptget]
+
+

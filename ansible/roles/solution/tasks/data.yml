@@ -1,0 +1,11 @@
+- name: Create server directory structure
+  become: true
+  file:
+    state: directory
+    recurse: yes
+    dest: '{{item.path}}'
+    owner: '{{item.owner}}'
+    group: '{{item.owner}}'
+    mode: '{{item.perms}}'
+  with_items:
+    "{{solution_dirs}}"

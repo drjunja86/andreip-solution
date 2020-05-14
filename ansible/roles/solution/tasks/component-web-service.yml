@@ -1,0 +1,64 @@
+---
+# copy and run app
+
+- name: Copy app jar file
+  copy:
+    src: files/app.jar
+    dest: "{{ solution_app_dir }}/app.jar"
+
+- name: Copy generator jar file
+  copy:
+    src: files/generator.jar
+    dest: "{{ solution_generator_dir }}/generator.jar"
+
+- name: Copy sql driver jar file
+  copy:
+    src: files/postgresql-42.2.12.jar
+    dest: "{{ solution_generator_dir }}/postgresql-42.2.12.jar"
+
+- name: Copy docker file
+  template:
+    src: templates/Dockerfile.j2
+    dest: "{{ solution_app_dir }}/Dockerfile"
+
+- name: Copy generator docker file
+  template:
+    src: templates/Dockerfile_generator.j2
+    dest: "{{ solution_generator_dir }}/Dockerfile"
+
+- name: Build app docker image
+  become: true
+  command: "docker build . -t webservice"
+  args:
+    chdir: "{{ solution_app_dir }}"
+
+- name: Build generator docker image
+  become: true
+  command: "docker build . -t generator"
+  args:
+    chdir: "{{ solution_generator_dir }}"
+
+- name: Copy docker-compose file
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: "{{ solution_base_dir }}/docker-compose.yml"
+
+- name: Deploy container
+  become: true
+  command: "docker-compose -p {{ project_name }} -f {{ solution_base_dir }}/docker-compose.yml up -d"
+  environment:
+    COMPOSE_HTTP_TIMEOUT: "{{ docker_compose_http_timeout }}"
+
+#- name: Ensure that endpoint is reachable within 30 seconds
+#  wait_for:
+#    host: 0.0.0.0
+#    port: 8080
+#    delay: 30
+
+#- name: Get the status of the web service
+#  uri:
+#    url: "http://0.0.0.0:8080/v1/order"
+#    method: GET
+#    return_content: yes
+#    status_code: 200
+#    body_format: json
